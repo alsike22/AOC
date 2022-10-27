@@ -13,7 +13,7 @@ class Config(object):
         self.time_step = 4
 
         # training configs
-        self.num_epoch = 50
+        self.num_epoch = 100
         self.freeze_length_epoch = 10
         self.change_center_epoch = 10
         self.center_eps = 1

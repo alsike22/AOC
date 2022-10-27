@@ -47,7 +47,7 @@ args = parser.parse_args()
 device = torch.device(args.device)
 experiment_description = args.experiment_description
 data_type = args.selected_dataset
-method = 'AE_OC'
+method = 'AOC'
 run_description = args.run_description
 selected_dataset = args.selected_dataset
 weight_decay = args.weight_decay
@@ -92,10 +92,8 @@ early, delay = dt.max_lead_sec, dt.max_lag_sec
 # Aggregate statistics from full dataset
 all_anomaly_num, all_test_score, all_test_scores_reasonable = [], [], []
 all_test_aff_score, all_test_aff_precision, all_test_aff_recall = [], [], []
-# detect_list = np.zeros(len(dt))
-# for idx in tqdm(range(len(dt))):
-detect_list = np.zeros(1)
-for idx in tqdm(range(1)):
+detect_list = np.zeros(len(dt))
+for idx in tqdm(range(len(dt))):
     torch.manual_seed(SEED)
     torch.backends.cudnn.deterministic = False
     torch.backends.cudnn.benchmark = False
@@ -137,12 +135,9 @@ for idx in tqdm(range(1)):
         print('*'*32)
         fig = plt.figure(facecolor="w", figsize=(10, 6))
         ax = fig.add_subplot(111)
-        # train_data_plot = time_series[meta_data.trainval]
-        # train_labels_plot = meta_data.anomaly[meta_data.trainval]
         test_data_plot = time_series[~meta_data.trainval]
         test_labels_plot = meta_data.anomaly[~meta_data.trainval]
         # plot time-series value
-        # t_data, y_data = test_data_plot.index[357000:370000], test_data_plot.values[357000:370000]
         t_data, y_data = test_data_plot.index, test_data_plot.values
         t = np.arange(0, len(y_data), 1)
         g = len(y_data.shape)
@@ -152,7 +147,6 @@ for idx in tqdm(range(1)):
         ax.set_ylabel('value', fontsize=10)
 
         # plot ground-truth anomaly
-        # t_label, y_label = test_labels_plot.index[357000:370000], test_labels_plot.values[357000:370000]
         t_label, y_label = test_labels_plot.index, test_labels_plot.values
         splits = np.where(y_label[1:] != y_label[:-1])[0] + 1
         splits = np.concatenate(([0], splits, [len(y_label) - 1]))
@@ -160,7 +154,6 @@ for idx in tqdm(range(1)):
             if y_label[splits[k]]:  # If splits[k] is anomalous
                 ax.axvspan(t[splits[k]], t[splits[k + 1]], color="#e07070", alpha=0.5)
         # plot predict anomaly score
-        # predict = np.tile(predict, configs.window_size).flatten()[357000:370000]
         predict = np.tile(predict.reshape(-1, 1), configs.time_step).flatten()
         t_pred = np.arange(0, len(predict), 1)
         ax2 = ax.twinx()
@@ -168,10 +161,6 @@ for idx in tqdm(range(1)):
         ax2.plot(t_pred, predict, linewidth=1, color='r')
         time_series_name = test_data_plot.columns[0]
         plt.title(time_series_name + '_' + str(idx))
-        # plt.title('NAB' + '-' + '06-art_daily_jumps_down', fontsize=14)
-        # plt.title('IOpsCompetition' + '-' + '00-da10a69f-d836-3baa-ad40-3e548ecf1fbd', fontsize=14)
-        # plt.title('UCR' + '-' + '10-' + time_series_name, fontsize=14)
-        # plt.title('SMAP' + '-' + '00-dimension', fontsize=14)
         plt.show()
 
         fig_origin = plt.figure(facecolor="w", figsize=(20, 12))

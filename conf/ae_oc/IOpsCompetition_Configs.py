@@ -4,22 +4,21 @@ class Config(object):
         self.dataset = 'IOpsCompetition'
         # model configs
         self.input_channels = 1
-        self.hidden_size = 64
+        self.hidden_size = 16
         self.num_layers = 3
-        self.project_channels = 16
+        self.project_channels = 32
 
         self.dropout = 0.45
         self.window_size = 16
         self.time_step = 2
 
         # training configs
-        self.num_epoch = 10
+        self.num_epoch = 50
         self.freeze_length_epoch = 10
         self.change_center_epoch = 10
-
         self.center_eps = 0.1
         self.omega1 = 1
-        self.omega2 = 0.01
+        self.omega2 = 0.1
 
         # optimizer parameters
         self.beta1 = 0.9
